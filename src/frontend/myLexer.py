@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 class TokenType(Enum):
     #Literal Types
+    Null = 8
     Number = 0
     Identifier = 1
 
@@ -23,7 +24,8 @@ class Token():
     typeOf: TokenType
 
 KEYWORDS = {
-    "let": TokenType.Let
+    "let": TokenType.Let,
+    "null": TokenType.Null
 }
     
 def isInt(value: str) -> bool:
