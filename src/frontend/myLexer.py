@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass
 
+
 class TokenType(Enum):
     #Literal Types
     Number = 0
@@ -47,7 +48,7 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.OpenParen))
         elif(src[0] == ")"):
             tokens.append(getToken(src.pop(0), TokenType.CloseParen))
-        elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/"):
+        elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/" or src[0] == "%"):
             tokens.append(getToken(src.pop(0), TokenType.BinaryOperator))
         elif(src[0] == "="):
             tokens.append(getToken(src.pop(0), TokenType.Equals))
@@ -74,6 +75,3 @@ def tokenize(sourceCode: str) -> list:
     return tokens
 
 
-with open("testFiles/test.txt", "r") as f:
-    for line in f.readlines():
-        print(tokenize(line))
