@@ -14,6 +14,12 @@ class TokenType(Enum):
     Equals = 4
     OpenParen = 5
     CloseParen = 6
+    EOF = 7
+    
+@dataclass
+class Token():
+    value: str
+    typeOf: TokenType
 
 KEYWORDS = {
     "let": TokenType.Let
@@ -28,8 +34,8 @@ def isSkippable(value: str) -> bool:
     return (value == " " or value == "\n" or value == "\t")
 
     
-def getToken(value: str, typeOf: TokenType):
-    return {"value": value, "type": typeOf.value}
+def getToken(value: str, typeOf: TokenType) -> Token:
+    return Token(value, typeOf)
     
 def tokenize(sourceCode: str) -> list:
     tokens = []
@@ -64,6 +70,7 @@ def tokenize(sourceCode: str) -> list:
             else:
                 print(f"unreconized char found {src[0]}")
                 break
+    tokens.append(getToken("EndOfFile", TokenType.EOF))
     return tokens
 
 
