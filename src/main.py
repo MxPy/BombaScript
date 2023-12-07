@@ -3,17 +3,17 @@ from dataclasses import dataclass
 
 class TokenType(Enum):
     #Literal Types
-    Number = "Number"
-    Identifier = "Identifier"
+    Number = 0
+    Identifier = 1
 
     #Keywords
-    Let = "Let"
+    Let = 2
 
     #Grouping * Operators
-    BinaryOperator = "BinaryOperator"
-    Equals = "Equals"
-    OpenParen = "OpenParen"
-    CloseParen = "CloseParen"
+    BinaryOperator = 3
+    Equals = 4
+    OpenParen = 5
+    CloseParen = 6
 
 KEYWORDS = {
     "let": TokenType.Let
@@ -26,16 +26,12 @@ def isInt(value: str) -> bool:
 
 def isSkippable(value: str) -> bool:
     return (value == " " or value == "\n" or value == "\t")
+
     
-@dataclass
-class Token():
-    value: str
-    typeOf: TokenType
+def getToken(value: str, typeOf: TokenType):
+    return {"value": value, "type": typeOf.value}
     
-def getToken(value: str, typeOf: TokenType) -> Token:
-    return Token(value, typeOf)
-    
-def tokenize(sourceCode: str) -> list[Token]:
+def tokenize(sourceCode: str) -> list:
     tokens = []
     src = list(sourceCode)
     
@@ -71,6 +67,6 @@ def tokenize(sourceCode: str) -> list[Token]:
     return tokens
 
 
-#with open("testFiles/test.txt", "r") as f:
-    #for line in f.readlines():
-        #print(tokenize(line))
+with open("testFiles/test.txt", "r") as f:
+    for line in f.readlines():
+        print(tokenize(line))
