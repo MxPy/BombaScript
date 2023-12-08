@@ -13,7 +13,7 @@ class RuntimeVal:
 @dataclass
 class NullVal(RuntimeVal):
     typeOf: ValueType.null
-    value: "null"
+    value: str
     
 @dataclass
 class NumberVal(RuntimeVal):

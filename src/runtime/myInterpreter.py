@@ -1,12 +1,14 @@
-from runtime.values import RuntimeVal, ValueType, NumberVal, NullVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier
+from runtime.myEnvironment import Environment
 
-def evaluate_binary_expr(binop: BinaryExpr) -> RuntimeVal:
-    leftSide = evaluate(binop.left)
-    rightSide = evaluate(binop.right)
+def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
+    leftSide = evaluate(binop.left, env)
+    rightSide = evaluate(binop.right, env)
     
     if(leftSide.typeOf == "number" and rightSide.typeOf == "number"):
         return evaluate_numeric_binary_expr(leftSide, rightSide, binop.operator)
+    return NullVal(typeOf= "null", value= "null")
 
 def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, operator: str) -> NumberVal:
     res = 0
@@ -15,7 +17,8 @@ def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, oper
     elif(operator == "-"):
         res = leftSide.value - rightSide.value
     elif(operator == "/"):
-        #TODO 0 checks
+        if(rightSide.value == 0):
+            raise ValueError("Dividing by 0 is not allowed")
         res = leftSide.value / rightSide.value
     elif(operator == "*"):
         res = leftSide.value * rightSide.value
@@ -23,23 +26,28 @@ def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, oper
         res = leftSide.value % rightSide.value
     
     return NumberVal(typeOf="number", value=res)
-def evaluate_program(program: Program) -> RuntimeVal:
+
+def evaluate_program(program: Program, env: Environment) -> RuntimeVal:
     lastEvald = NullVal(typeOf= "null", value= "null")
     for statement in program.body:
-        lastEvald = evaluate(statement)
+        lastEvald = evaluate(statement , env)
     return lastEvald
 
-def evaluate(astNode: Stmt) -> RuntimeVal:
+def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
+    val = env.lookupVar(env, ident.symbol)
+    return val
+
+def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
         return NumberVal(typeOf = "number", value = astNode.value)
     elif(astNode.kind == "NullLiteral"): 
         return NullVal(typeOf= "null", value= "null")
     elif(astNode.kind == "Identifier"): 
-        pass
+       return evaluate_identifier(astNode ,env)
     elif(astNode.kind == "BinaryExpr"): 
-        return evaluate_binary_expr(astNode)
+        return evaluate_binary_expr(astNode, env)
     elif(astNode.kind == "Program"): 
-        return evaluate_program(astNode)
+        return evaluate_program(astNode, env)
     else:
-        print("Not set up AST node")
+        raise ValueError("Not set up AST node")
         
