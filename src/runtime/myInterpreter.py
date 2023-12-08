@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, MK_NULL
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr
 from runtime.myEnvironment import Environment
 
 def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
@@ -33,8 +33,18 @@ def evaluate_program(program: Program, env: Environment) -> RuntimeVal:
         lastEvald = evaluate(statement , env)
     return lastEvald
 
+def evaluate_var_declaration(varDeclaration: VarDeclaration, env: Environment) -> RuntimeVal:
+    val=evaluate(varDeclaration.value, env) if varDeclaration.value else MK_NULL()
+    return env.declareVar(env, varName=varDeclaration.identifier,value=val,isConstant= varDeclaration.const)
+
 def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
     val = env.lookupVar(env, ident.symbol)
+    return val
+
+def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
+    if(node.assigne.kind != "Identifier"):
+        raise  ValueError("Invalid LHS identifier")
+    val = env.assignVar(env, varName= node.assigne.symbol, value= evaluate(node.value, env))
     return val
 
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
@@ -46,6 +56,10 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_binary_expr(astNode, env)
     elif(astNode.kind == "Program"): 
         return evaluate_program(astNode, env)
+    elif(astNode.kind == "VarDeclaration"): 
+        return evaluate_var_declaration(astNode, env)
+    elif(astNode.kind == "AssigmentExpr"): 
+        return evaluate_assignment(astNode, env)
     else:
         raise ValueError("Not set up AST node")
         

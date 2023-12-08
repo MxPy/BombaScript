@@ -6,10 +6,9 @@ from runtime.myValues import MK_NULL, MK_NUM, MK_BOOL
 def repl():
     parser = Parser
     env = Environment
-    env.declareVar(env, "x", MK_NUM(100.5))
-    env.declareVar(env, "true", MK_BOOL(True))
-    env.declareVar(env, "false", MK_BOOL(False))
-    env.declareVar(env, "null", MK_NULL())
+    env.declareVar(env, "true", MK_BOOL(True), True)
+    env.declareVar(env, "false", MK_BOOL(False), True)
+    env.declareVar(env, "null", MK_NULL(), True)
     print("Repl v0.0.1")
     while(True):
         print(">>> ",end='')

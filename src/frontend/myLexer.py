@@ -9,6 +9,7 @@ class TokenType(Enum):
 
     #Keywords
     Let = 2
+    Const = 8
 
     #Grouping * Operators
     BinaryOperator = 3
@@ -16,6 +17,7 @@ class TokenType(Enum):
     OpenParen = 5
     CloseParen = 6
     EOF = 7
+    Semicolon = 9
     
 @dataclass
 class Token():
@@ -24,6 +26,7 @@ class Token():
 
 KEYWORDS = {
     "let": TokenType.Let,
+    "const": TokenType.Const
 }
     
 def isInt(value: str) -> bool:
@@ -52,6 +55,8 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.BinaryOperator))
         elif(src[0] == "="):
             tokens.append(getToken(src.pop(0), TokenType.Equals))
+        elif(src[0] == ";"):
+            tokens.append(getToken(src.pop(0), TokenType.Semicolon))
         else:
             if(isInt(src[0])):
                 num = ""
