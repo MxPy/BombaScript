@@ -40,8 +40,6 @@ def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
         return NumberVal(typeOf = "number", value = astNode.value)
-    elif(astNode.kind == "NullLiteral"): 
-        return NullVal(typeOf= "null", value= "null")
     elif(astNode.kind == "Identifier"): 
        return evaluate_identifier(astNode ,env)
     elif(astNode.kind == "BinaryExpr"): 

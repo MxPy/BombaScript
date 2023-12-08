@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, NullLiteral
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -56,9 +56,6 @@ class Parser:
             return Identrifier(kind = "Identifier", symbol=self.eat(self).value)
         elif(tk == TokenType.Number):
             return NumericLiteral(kind = "NumericLiteral", value=float(self.eat(self).value))
-        elif(tk == TokenType.Null):
-            self.eat(self)
-            return NullLiteral(kind = "NullLiteral", value="null")
         elif (tk == TokenType.OpenParen):
             self.eat(self)
             val = self.parse_expr(self)

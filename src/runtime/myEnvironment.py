@@ -2,7 +2,7 @@ from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal
 
 
 class Environment:
-    parent: 'Environment'
+    parent: 'Environment' = None
     variables: dict = {}
     
     def __init__(self, parentENV: 'Environment') -> None:

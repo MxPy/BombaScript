@@ -5,7 +5,6 @@ from dataclasses import dataclass
 class NodeType:
     Program = "Program"
     NumericLiteral = "NumericLiteral"
-    NullLiteral = "NullLiteral"
     Identifier = "Identifier"
     BinaryExpr = "BinaryExpr"
 
@@ -39,7 +38,3 @@ class NumericLiteral(Expr):
     kind = NodeType.Identifier
     value: int or float
     
-@dataclass
-class NullLiteral(Expr):
-    kind = NodeType.NullLiteral
-    value: "null"
