@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal, StringVal
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral
 
 from runtime.myEnvironment import Environment
 
@@ -106,6 +106,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_assignment(astNode, env)
     elif(astNode.kind == "ObjectLiteral"): 
         return evaluate_object_expr(astNode, env)
+    elif(astNode.kind == "StringLiteral"): 
+        return StringVal(typeOf="string", value=astNode.value)
     elif(astNode.kind == "CallExpr"): 
         return evaluate_call_expr(astNode, env)
     elif(astNode.kind == "MemberExpr"): 

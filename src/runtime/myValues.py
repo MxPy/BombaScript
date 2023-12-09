@@ -5,6 +5,7 @@ from frontend.myAst import Stmt
 class ValueType:
     null = "null"
     number = "number"
+    string = "string"
     boolean = "boolean"
     obj = "obj"
     native_fn = "native_fn"
@@ -29,6 +30,11 @@ class BooleanVal(RuntimeVal):
 class NumberVal(RuntimeVal):
     typeOf: ValueType.number
     value: float or int
+    
+@dataclass
+class StringVal(RuntimeVal):
+    typeOf: ValueType.string
+    value: str
     
 @dataclass
 class ObjectVal(RuntimeVal):

@@ -10,6 +10,7 @@ class NodeType:
     
     #EXPR
     NumericLiteral = "NumericLiteral"
+    StringLiteral = "StringLiteral"
     Identifier = "Identifier"
     BinaryExpr = "BinaryExpr"
     MemberExpr = "MemberExpr"
@@ -79,8 +80,13 @@ class Identrifier(Expr):
     
 @dataclass
 class NumericLiteral(Expr):
-    kind = NodeType.Identifier
+    kind = NodeType.NumericLiteral
     value: int or float
+    
+@dataclass
+class StringLiteral(Expr):
+    kind = NodeType.StringLiteral
+    value: str
 
 @dataclass
 class Property(Expr):

@@ -26,6 +26,7 @@ class TokenType(Enum):
     OpenBracket = 14 #[
     CloseBracket = 15 #]
     Dot = 16 #.
+    Quotation = 18 #"
     
 @dataclass
 class Token():
@@ -80,6 +81,8 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.Comma))
         elif(src[0] == "."):
             tokens.append(getToken(src.pop(0), TokenType.Dot))
+        elif(src[0] == '"'):
+            tokens.append(getToken(src.pop(0), TokenType.Quotation))
         else:
             if(isInt(src[0])):
                 num = ""

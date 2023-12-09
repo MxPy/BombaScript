@@ -1,21 +1,13 @@
 from frontend.myParser import Parser
 from runtime.myInterpreter import evaluate
 from runtime.myEnvironment import Environment
-from runtime.myValues import MK_NULL, MK_NUM, MK_BOOL, MK_NATIVE_FN
 
-from datetime import datetime
-
-def repl():
+def bomba():
     parser = Parser
     env = Environment()
-    env.declareVar("true", MK_BOOL(True), True)
-    env.declareVar("false", MK_BOOL(False), True)
-    env.declareVar("null", MK_NULL(), True)
     
-    env.declareVar("print", MK_NATIVE_FN(lambda args, env: print(args)), True)
-    env.declareVar("time", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
     
-    print("Repl v0.0.1")
+    print("bomba v0.0.2")
     #while(True):
        # print(">>> ",end='')
        # x = ""
@@ -30,7 +22,8 @@ def repl():
     with open('src/testFiles/test.txt', 'r') as file:
         data = file.read()
         program = parser.produceAST(parser, data)
+        #print(program)
         result = evaluate(program, env)
         #print(result)
     
-repl()
+bomba()
