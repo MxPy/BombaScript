@@ -6,6 +6,7 @@ class NodeType:
     #STMT
     Program = "Program"
     VarDeclaration = "VarDeclaration"
+    FunctionDeclaration = "FunctionDeclaration"
     
     #EXPR
     NumericLiteral = "NumericLiteral"
@@ -37,6 +38,13 @@ class VarDeclaration(Stmt):
     const: bool
     identifier: str
     value: Expr = None
+    
+@dataclass
+class FunctionDeclaration(Stmt):
+    kind = NodeType.FunctionDeclaration
+    params: list[str]
+    name: str
+    body: Stmt
 
 @dataclass
 class BinaryExpr(Expr):

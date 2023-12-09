@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -43,9 +43,27 @@ class Parser:
     def parse_stmt(self) -> Stmt:
         if(self.at(self).typeOf == TokenType.Let or self.at(self).typeOf == TokenType.Const):
             return self.parse_variable_declaration(self)
+        elif(self.at(self).typeOf == TokenType.Fn):
+            return self.parse_function_declaration(self)
         else:
             return self.parse_expr(self)
     
+    def parse_function_declaration(self) -> Stmt:
+        self.eat(self)
+        nae = self.expect(self, TokenType.Identifier, "Expected name of function following Fn keyword").value
+        args = self.parse_args(self)
+        pars = []
+        for arg in args:
+            if(arg.kind != "Identifier"):
+                raise ValueError(f"Inside function declaration parameters to be string {arg}")
+            pars.append(arg.symbol)
+        self.expect(self, TokenType.OpenBrace, "Expected body following function declaration")
+        bod = []
+        while(self.not_eof and self.at(self).typeOf != TokenType.CloseBrace):
+            bod.append(self.parse_stmt(self))
+        self.expect(self, TokenType.CloseBrace, "Expected closing brace following function body")
+        fun = FunctionDeclaration(kind="FunctionDeclaration", name= nae, body=bod, params=pars)
+        return fun
     
     def parse_expr(self) -> Expr:
         return self.parse_assigment_expr(self)
@@ -103,14 +121,14 @@ class Parser:
         return member
     
     def parse_call_expr(self, caller: Expr) -> Expr:
-        call_expr = CallExpr(kind="CallExpr", clle=caller,args=self.parse_call_args(self))
+        call_expr = CallExpr(kind="CallExpr", clle=caller,args=self.parse_args(self))
         
         if(self.at(self).typeOf == TokenType.OpenParen):
             call_expr = self.parse_call_expr(self, call_expr)
             
         return call_expr
     
-    def parse_call_args(self) -> list[Expr]:
+    def parse_args(self) -> list[Expr]:
         self.expect(self, TokenType.OpenParen, "Expected open paren")
         
         args = [] if self.at(self).typeOf == TokenType.CloseParen else self.parse_call_args_list(self)

@@ -6,7 +6,7 @@ class Environment:
     variables: dict = {}
     constVariables: list = []
     
-    def __init__(self, parentENV: 'Environment') -> None:
+    def __init__(self, parentENV: 'Environment' = None) -> None:
         self.parent = parentENV
         self.variables = {}
         self.constVariables = []
@@ -20,7 +20,7 @@ class Environment:
         return value
     
     def assignVar(self, varName: str, value: RuntimeVal) -> RuntimeVal:
-        env = self.resolve(self, varName)
+        env = self.resolve(varName)
         if(varName in env.constVariables):
             raise ValueError("Cannot assign value to const variable")
         env.variables.update({varName: value})
@@ -31,8 +31,8 @@ class Environment:
             return self
         if self.parent == None:
             raise NameError(f"Cannot resolve {varName} as is not exist in current scope")
-        return self.parent.resolve(self.parent, varName)
+        return self.parent.resolve(varName)
     
     def lookupVar(self, varName: str) -> RuntimeVal:
-        env = self.resolve(self, varName)
+        env = self.resolve(varName)
         return env.variables.get(varName)

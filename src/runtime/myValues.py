@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from frontend.myAst import Stmt
 
 @dataclass
 class ValueType:
@@ -7,6 +8,7 @@ class ValueType:
     boolean = "boolean"
     obj = "obj"
     native_fn = "native_fn"
+    function = "function"
 
 
 @dataclass
@@ -41,6 +43,15 @@ def FunctionCall (args: list[RuntimeVal], env) -> RuntimeVal:
 class NativeFnVal(RuntimeVal):
     typeOf: ValueType.native_fn
     call: FunctionCall
+    
+#TODO resolve importing problems with Enviroment
+@dataclass
+class FunctionVal(RuntimeVal):
+    typeOf: ValueType.function
+    name: str
+    params: list[str]
+    declarationEnv: 'Enviroment'
+    body: list[Stmt]
 
 #macros
 def MK_NUM(val: float or int) -> NumberVal:

@@ -1,5 +1,6 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration
+
 from runtime.myEnvironment import Environment
 
 def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
@@ -35,10 +36,10 @@ def evaluate_program(program: Program, env: Environment) -> RuntimeVal:
 
 def evaluate_var_declaration(varDeclaration: VarDeclaration, env: Environment) -> RuntimeVal:
     val=evaluate(varDeclaration.value, env) if varDeclaration.value else MK_NULL()
-    return env.declareVar(env, varName=varDeclaration.identifier,value=val,isConstant= varDeclaration.const)
+    return env.declareVar(varName=varDeclaration.identifier,value=val,isConstant= varDeclaration.const)
 
 def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
-    val = env.lookupVar(env, ident.symbol)
+    val = env.lookupVar(ident.symbol)
     return val
 
 def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
@@ -48,7 +49,7 @@ def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
         return obj.properties[node.assigne.prop.symbol]
     if(node.assigne.kind != "Identifier"):
         raise  ValueError(f"Invalid LHS identifier {node.assigne}")
-    val = env.assignVar(env, varName= node.assigne.symbol, value= evaluate(node.value, env))
+    val = env.assignVar(varName= node.assigne.symbol, value= evaluate(node.value, env))
     return val
 
 def evaluate_object_expr(obj: ObjectLiteral, env: Environment) -> RuntimeVal:
@@ -57,7 +58,7 @@ def evaluate_object_expr(obj: ObjectLiteral, env: Environment) -> RuntimeVal:
         if(prop.value):
             val = evaluate(prop.value, env)
         else:
-            val = env.lookupVar(env, prop.key)
+            val = env.lookupVar(prop.key)
         object.properties[prop.key] = val
     return object
 
@@ -66,14 +67,27 @@ def evaluate_call_expr(expr: CallExpr, env: Environment) -> RuntimeVal:
     for arg in expr.args:
         args.append(evaluate(arg, env))
     fn = evaluate(expr.clle, env)
-    if(fn.typeOf != "native_fn"):
-        raise ValueError(f"Cannot call not a function {fn}")
-    result = fn.call(args, env)
-    return result
+    if(fn.typeOf == "native_fn"):
+        result = fn.call(args, env)
+        return result
+    elif(fn.typeOf == "function"):
+        scope = Environment(fn.declarationEnv)
+        for count, ele in enumerate(fn.params):
+            scope.declareVar(ele, args[count], False)
+        result = MK_NULL()
+        for st in fn.body:
+            result = evaluate(st, scope)
+        return result
+    raise ValueError(f"Cannot call not a function {fn}")
+    
 
 def evaluate_member_expr(expr: MemberExpr, env: Environment) -> RuntimeVal:
     obj = evaluate(expr.obj, env)
     return obj.properties.get(expr.prop.symbol)
+
+def evaluate_function_declaration(declaration: FunctionDeclaration, env: Environment) -> RuntimeVal:
+    fun = FunctionVal(typeOf="function", name= declaration.name, params=declaration.params, declarationEnv=env, body=declaration.body)
+    return env.declareVar(declaration.name, fun, True)
 
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
@@ -86,6 +100,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_program(astNode, env)
     elif(astNode.kind == "VarDeclaration"): 
         return evaluate_var_declaration(astNode, env)
+    elif(astNode.kind == "FunctionDeclaration"):
+        return evaluate_function_declaration(astNode, env)
     elif(astNode.kind == "AssigmentExpr"): 
         return evaluate_assignment(astNode, env)
     elif(astNode.kind == "ObjectLiteral"): 

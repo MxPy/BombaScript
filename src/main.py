@@ -7,13 +7,13 @@ from datetime import datetime
 
 def repl():
     parser = Parser
-    env = Environment
-    env.declareVar(env, "true", MK_BOOL(True), True)
-    env.declareVar(env, "false", MK_BOOL(False), True)
-    env.declareVar(env, "null", MK_NULL(), True)
+    env = Environment()
+    env.declareVar("true", MK_BOOL(True), True)
+    env.declareVar("false", MK_BOOL(False), True)
+    env.declareVar("null", MK_NULL(), True)
     
-    env.declareVar(env, "print", MK_NATIVE_FN(lambda args, env: print(args)), True)
-    env.declareVar(env, "time", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
+    env.declareVar("print", MK_NATIVE_FN(lambda args, env: print(args)), True)
+    env.declareVar("time", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
     
     print("Repl v0.0.1")
     #while(True):
