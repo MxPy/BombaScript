@@ -6,6 +6,7 @@ class ValueType:
     number = "number"
     boolean = "boolean"
     obj = "obj"
+    native_fn = "native_fn"
 
 
 @dataclass
@@ -32,6 +33,15 @@ class ObjectVal(RuntimeVal):
     typeOf: ValueType.obj
     properties: dict
     
+
+def FunctionCall (args: list[RuntimeVal], env) -> RuntimeVal:
+    return MK_NULL()
+
+@dataclass
+class NativeFnVal(RuntimeVal):
+    typeOf: ValueType.native_fn
+    call: FunctionCall
+
 #macros
 def MK_NUM(val: float or int) -> NumberVal:
     return NumberVal(typeOf="number", value= val)
@@ -44,3 +54,7 @@ def MK_BOOL(val: bool = True) -> BooleanVal:
 #macros
 def MK_NULL() -> NullVal:
     return NullVal(typeOf="null", value= "null")
+
+#macros
+def MK_NATIVE_FN(calle: FunctionCall) -> NullVal:
+    return NativeFnVal(typeOf="native_fn", call= calle)

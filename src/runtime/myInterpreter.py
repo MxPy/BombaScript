@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr
 from runtime.myEnvironment import Environment
 
 def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
@@ -42,8 +42,12 @@ def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
     return val
 
 def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
+    if(node.assigne.kind == "MemberExpr"):
+        obj = evaluate(node.assigne.obj, env)
+        obj.properties[node.assigne.prop.symbol] = evaluate(node.value, env)
+        return obj.properties[node.assigne.prop.symbol]
     if(node.assigne.kind != "Identifier"):
-        raise  ValueError("Invalid LHS identifier")
+        raise  ValueError(f"Invalid LHS identifier {node.assigne}")
     val = env.assignVar(env, varName= node.assigne.symbol, value= evaluate(node.value, env))
     return val
 
@@ -56,6 +60,20 @@ def evaluate_object_expr(obj: ObjectLiteral, env: Environment) -> RuntimeVal:
             val = env.lookupVar(env, prop.key)
         object.properties[prop.key] = val
     return object
+
+def evaluate_call_expr(expr: CallExpr, env: Environment) -> RuntimeVal:
+    args = []
+    for arg in expr.args:
+        args.append(evaluate(arg, env))
+    fn = evaluate(expr.clle, env)
+    if(fn.typeOf != "native_fn"):
+        raise ValueError(f"Cannot call not a function {fn}")
+    result = fn.call(args, env)
+    return result
+
+def evaluate_member_expr(expr: MemberExpr, env: Environment) -> RuntimeVal:
+    obj = evaluate(expr.obj, env)
+    return obj.properties.get(expr.prop.symbol)
 
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
@@ -72,6 +90,10 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_assignment(astNode, env)
     elif(astNode.kind == "ObjectLiteral"): 
         return evaluate_object_expr(astNode, env)
+    elif(astNode.kind == "CallExpr"): 
+        return evaluate_call_expr(astNode, env)
+    elif(astNode.kind == "MemberExpr"): 
+        return evaluate_member_expr(astNode, env)
     else:
         raise ValueError(f"Not set up AST node: {astNode}")
         
