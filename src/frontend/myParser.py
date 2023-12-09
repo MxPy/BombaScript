@@ -53,7 +53,7 @@ class Parser:
     def parse_object_expr(self) -> Expr:
         if(self.at(self).typeOf != TokenType.OpenBrace):
             return self.parse_addative_expr(self)
-        self.expect(self, TokenType.OpenBrace, "something went horibly wrong")
+        self.expect(self, TokenType.OpenBrace, "something went horribly wrong")
         props = []
         while(self.not_eof(self) and self.at(self).typeOf != TokenType.CloseBrace):
             keyy = self.expect(self, TokenType.Identifier, "Expected object literal key ").value
