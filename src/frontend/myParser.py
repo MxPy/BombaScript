@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -53,6 +53,7 @@ class Parser:
     def parse_object_expr(self) -> Expr:
         if(self.at(self).typeOf != TokenType.OpenBrace):
             return self.parse_addative_expr(self)
+        
         self.expect(self, TokenType.OpenBrace, "something went horribly wrong")
         props = []
         while(self.not_eof(self) and self.at(self).typeOf != TokenType.CloseBrace):
@@ -74,6 +75,7 @@ class Parser:
         
         self.expect(self, TokenType.CloseBrace, "Expected closing brace after object properties")
         return ObjectLiteral(kind="ObjectLiteral", properties=props)
+    
     def parse_assigment_expr(self):
         left = self.parse_object_expr(self)
         if(self.at(self).typeOf == TokenType.Equals):
@@ -91,12 +93,66 @@ class Parser:
             leftt = BinaryExpr(kind="BinaryExpr", left = leftt, right = rightt, operator = operatorr)
         return leftt
     
+    
+    def parse_call_member_expr(self) -> Expr:
+        member = self.parse_member_expr(self)
+        
+        if(self.at(self).typeOf == TokenType.OpenParen):
+            return self.parse_call_expr(self, member)
+        
+        return member
+    
+    def parse_call_expr(self, caller: Expr) -> Expr:
+        call_expr = CallExpr(kind="CallExpr", clle=caller,args=self.parse_call_args(self))
+        
+        if(self.at(self).typeOf == TokenType.OpenParen):
+            call_expr = self.parse_call_expr(self, call_expr)
+            
+        return call_expr
+    
+    def parse_call_args(self) -> list[Expr]:
+        self.expect(self, TokenType.OpenParen, "Expected open paren")
+        
+        args = [] if self.at(self).typeOf == TokenType.CloseParen else self.parse_call_args_list(self)
+        self.expect(self, TokenType.CloseParen, "Expected closed paren after arguments list")
+        
+        return args
+    
+    def parse_call_args_list(self) -> list[Expr]:
+        args = [self.parse_assigment_expr(self)]
+        
+        while(self.at(self).typeOf == TokenType.Comma and self.eat(self)):
+            args.append(self.parse_assigment_expr(self))
+            
+        return args
+    
+    def parse_member_expr(self) -> Expr:
+        objc = self.parse_primary_expr(self)
+        while(self.at(self).typeOf == TokenType.Dot or self.at(self).typeOf == TokenType.OpenBracket):
+            operator = self.eat(self)
+            prope = Expr
+            comp = False
+            if(operator.typeOf == TokenType.Dot):
+                computed = False
+                prope = self.parse_primary_expr(self)
+                if(prope.kind != "Identifier"):
+                    raise ValueError("Cannot use this operator withou RHS ident")
+            else:
+                computed = True
+                prope = self.parse_expr(self)
+                self.expect(self, TokenType.CloseBracket, "Expected closing bracket after computed value")
+            objc = MemberExpr(kind="MemberExpr", obj=objc, prop=prope, computed=comp)   
+             
+        return objc  
+        
+        
+    
     def parse_multiplicative_expr(self) -> Expr:
-        leftt = self.parse_primary_expr(self)
+        leftt = self.parse_call_member_expr(self)
         while(self.at(self).value == "/" or self.at(self).value == "*" or self.at(self).value == "%"):
             #TODO change eat to expect
             operatorr = self.eat(self).value
-            rightt = self.parse_primary_expr(self)
+            rightt = self.parse_call_member_expr(self)
             leftt = BinaryExpr(kind="BinaryExpr", left = leftt, right = rightt, operator = operatorr)
         return leftt
     

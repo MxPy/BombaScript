@@ -73,5 +73,5 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     elif(astNode.kind == "ObjectLiteral"): 
         return evaluate_object_expr(astNode, env)
     else:
-        raise ValueError("Not set up AST node")
+        raise ValueError(f"Not set up AST node: {astNode}")
         

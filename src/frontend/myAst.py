@@ -11,6 +11,8 @@ class NodeType:
     NumericLiteral = "NumericLiteral"
     Identifier = "Identifier"
     BinaryExpr = "BinaryExpr"
+    MemberExpr = "MemberExpr"
+    CallExpr = "CallExpr"
     AssigmentExpr = "AssigmentExpr"
     Property = "Property"
     ObjectLiteral = "ObjectLiteral"
@@ -42,7 +44,20 @@ class BinaryExpr(Expr):
     left: Expr
     right: Expr
     operator: str
+
+@dataclass
+class CallExpr(Expr):
+    kind = NodeType.CallExpr
+    args: list[Expr]
+    clle: Expr
     
+@dataclass
+class MemberExpr(Expr):
+    kind = NodeType.MemberExpr
+    obj: Expr
+    prop: Expr
+    computed: bool
+
 @dataclass
 class AssigmentExpr(Expr):
     kind = NodeType.AssigmentExpr

@@ -22,6 +22,9 @@ class TokenType(Enum):
     Colon = 11  #:
     OpenBrace = 12 #{
     CloseBrace = 13 #}
+    OpenBracket = 14 #[
+    CloseBracket = 15 #]
+    Dot = 16 #.
     
 @dataclass
 class Token():
@@ -59,6 +62,10 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.OpenBrace))
         elif(src[0] == "}"):
             tokens.append(getToken(src.pop(0), TokenType.CloseBrace))
+        elif(src[0] == "["):
+            tokens.append(getToken(src.pop(0), TokenType.OpenBracket))
+        elif(src[0] == "]"):
+            tokens.append(getToken(src.pop(0), TokenType.CloseBracket))
         elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/" or src[0] == "%"):
             tokens.append(getToken(src.pop(0), TokenType.BinaryOperator))
         elif(src[0] == "="):
@@ -69,6 +76,8 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.Colon))
         elif(src[0] == ","):
             tokens.append(getToken(src.pop(0), TokenType.Comma))
+        elif(src[0] == "."):
+            tokens.append(getToken(src.pop(0), TokenType.Dot))
         else:
             if(isInt(src[0])):
                 num = ""
