@@ -10,15 +10,20 @@ def repl():
     env.declareVar(env, "false", MK_BOOL(False), True)
     env.declareVar(env, "null", MK_NULL(), True)
     print("Repl v0.0.1")
-    while(True):
-        print(">>> ",end='')
-        x = ""
-        x = input()
-        if(x == "exit"):
-            break
-        program = parser.produceAST(parser, x)
+    #while(True):
+       # print(">>> ",end='')
+       # x = ""
+       # x = input()
+       # if(x == "exit"):
+       #     break
+       # program = parser.produceAST(parser, x)
         #print(program)
         
+      #  result = evaluate(program, env)
+      #  print(result)
+    with open('src/testFiles/test.txt', 'r') as file:
+        data = file.read()
+        program = parser.produceAST(parser, data)
         result = evaluate(program, env)
         print(result)
     

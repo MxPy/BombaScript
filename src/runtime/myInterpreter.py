@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, MK_NULL
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property
 from runtime.myEnvironment import Environment
 
 def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
@@ -47,6 +47,16 @@ def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
     val = env.assignVar(env, varName= node.assigne.symbol, value= evaluate(node.value, env))
     return val
 
+def evaluate_object_expr(obj: ObjectLiteral, env: Environment) -> RuntimeVal:
+    object = ObjectVal( typeOf="obj", properties= {})
+    for prop in obj.properties:
+        if(prop.value):
+            val = evaluate(prop.value, env)
+        else:
+            val = env.lookupVar(env, prop.key)
+        object.properties[prop.key] = val
+    return object
+
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
         return NumberVal(typeOf = "number", value = astNode.value)
@@ -60,6 +70,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_var_declaration(astNode, env)
     elif(astNode.kind == "AssigmentExpr"): 
         return evaluate_assignment(astNode, env)
+    elif(astNode.kind == "ObjectLiteral"): 
+        return evaluate_object_expr(astNode, env)
     else:
         raise ValueError("Not set up AST node")
         

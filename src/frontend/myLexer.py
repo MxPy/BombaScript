@@ -13,11 +13,15 @@ class TokenType(Enum):
 
     #Grouping * Operators
     BinaryOperator = 3
-    Equals = 4
-    OpenParen = 5
-    CloseParen = 6
+    Equals = 4 #=
+    OpenParen = 5 #(
+    CloseParen = 6  #)
     EOF = 7
-    Semicolon = 9
+    Semicolon = 9 #;
+    Comma = 10 #,
+    Colon = 11  #:
+    OpenBrace = 12 #{
+    CloseBrace = 13 #}
     
 @dataclass
 class Token():
@@ -51,12 +55,20 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.OpenParen))
         elif(src[0] == ")"):
             tokens.append(getToken(src.pop(0), TokenType.CloseParen))
+        elif(src[0] == "{"):
+            tokens.append(getToken(src.pop(0), TokenType.OpenBrace))
+        elif(src[0] == "}"):
+            tokens.append(getToken(src.pop(0), TokenType.CloseBrace))
         elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/" or src[0] == "%"):
             tokens.append(getToken(src.pop(0), TokenType.BinaryOperator))
         elif(src[0] == "="):
             tokens.append(getToken(src.pop(0), TokenType.Equals))
         elif(src[0] == ";"):
             tokens.append(getToken(src.pop(0), TokenType.Semicolon))
+        elif(src[0] == ":"):
+            tokens.append(getToken(src.pop(0), TokenType.Colon))
+        elif(src[0] == ","):
+            tokens.append(getToken(src.pop(0), TokenType.Comma))
         else:
             if(isInt(src[0])):
                 num = ""

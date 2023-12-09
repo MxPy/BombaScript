@@ -5,6 +5,7 @@ class ValueType:
     null = "null"
     number = "number"
     boolean = "boolean"
+    obj = "obj"
 
 
 @dataclass
@@ -26,9 +27,15 @@ class NumberVal(RuntimeVal):
     typeOf: ValueType.number
     value: float or int
     
+@dataclass
+class ObjectVal(RuntimeVal):
+    typeOf: ValueType.obj
+    properties: dict
+    
 #macros
 def MK_NUM(val: float or int) -> NumberVal:
     return NumberVal(typeOf="number", value= val)
+
 
 #macros
 def MK_BOOL(val: bool = True) -> BooleanVal:

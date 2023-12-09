@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -50,8 +50,32 @@ class Parser:
     def parse_expr(self) -> Expr:
         return self.parse_assigment_expr(self)
     
+    def parse_object_expr(self) -> Expr:
+        if(self.at(self).typeOf != TokenType.OpenBrace):
+            return self.parse_addative_expr(self)
+        self.expect(self, TokenType.OpenBrace, "something went horibly wrong")
+        props = []
+        while(self.not_eof(self) and self.at(self).typeOf != TokenType.CloseBrace):
+            keyy = self.expect(self, TokenType.Identifier, "Expected object literal key ").value
+            if(self.at(self).typeOf == TokenType.Comma):
+                self.eat(self)
+                props.append(Property(kind="Property", key=keyy))
+                continue
+            elif(self.at(self).typeOf == TokenType.CloseBrace):
+                props.append(Property(kind="Property", key=keyy))
+                continue
+            
+            self.expect(self, TokenType.Colon, "Expected colon after object literal key")
+            val = self.parse_expr(self)
+            props.append(Property(kind="Property", key=keyy, value=val))
+            
+            if(self.at(self).typeOf != TokenType.CloseBrace):
+                self.expect(self, TokenType.Comma, "Expected comma or closing barce after object property")
+        
+        self.expect(self, TokenType.CloseBrace, "Expected closing brace after object properties")
+        return ObjectLiteral(kind="ObjectLiteral", properties=props)
     def parse_assigment_expr(self):
-        left = self.parse_addative_expr(self)
+        left = self.parse_object_expr(self)
         if(self.at(self).typeOf == TokenType.Equals):
             self.eat(self)
             val = self.parse_assigment_expr(self)

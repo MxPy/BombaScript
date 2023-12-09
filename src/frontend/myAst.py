@@ -12,6 +12,8 @@ class NodeType:
     Identifier = "Identifier"
     BinaryExpr = "BinaryExpr"
     AssigmentExpr = "AssigmentExpr"
+    Property = "Property"
+    ObjectLiteral = "ObjectLiteral"
 
 @dataclass
 class Stmt:
@@ -56,4 +58,14 @@ class Identrifier(Expr):
 class NumericLiteral(Expr):
     kind = NodeType.Identifier
     value: int or float
+
+@dataclass
+class Property(Expr):
+    kind = NodeType.Property
+    key: str
+    value: Expr = None
     
+@dataclass
+class ObjectLiteral(Expr):
+    kind = NodeType.ObjectLiteral
+    properties: list[Property]
