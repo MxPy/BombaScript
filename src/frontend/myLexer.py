@@ -27,6 +27,7 @@ class TokenType(Enum):
     CloseBracket = 15 #]
     Dot = 16 #.
     Quotation = 18 #"
+    Unreconized = 19
     
 @dataclass
 class Token():
@@ -100,8 +101,7 @@ def tokenize(sourceCode: str) -> list:
             elif(isSkippable(src[0])):
                 src.pop(0)
             else:
-                print(f"unreconized char found {src[0]}")
-                break
+                tokens.append(getToken(src.pop(0), TokenType.Unreconized))
     tokens.append(getToken("EndOfFile", TokenType.EOF))
     return tokens
 

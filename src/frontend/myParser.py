@@ -193,7 +193,6 @@ class Parser:
                 while(self.at(self).typeOf != TokenType.Quotation and self.not_eof(self)):
                     val += ' '
                     val += self.eat(self).value
-                
             self.expect(self, TokenType.Quotation, "Close Quatation Error ")
             return StringLiteral(kind="StringLiteral", value=val)
         else:
