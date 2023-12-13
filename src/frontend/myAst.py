@@ -98,3 +98,4 @@ class Property(Expr):
 class ObjectLiteral(Expr):
     kind = NodeType.ObjectLiteral
     properties: list[Property]
+    
