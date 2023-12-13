@@ -70,7 +70,7 @@ class Parser:
     
     def parse_object_expr(self) -> Expr:
         if(self.at(self).typeOf != TokenType.OpenBrace):
-            return self.parse_addative_expr(self)
+            return self.parse_comparsion_expr(self)
         
         self.expect(self, TokenType.OpenBrace, "something went horribly wrong")
         props = []
@@ -101,6 +101,15 @@ class Parser:
             val = self.parse_assigment_expr(self)
             return AssigmentExpr(kind="AssigmentExpr", assigne=left, value= val)
         return left
+    
+    def parse_comparsion_expr(self) -> Expr:
+        leftt = self.parse_addative_expr(self)
+        while(self.at(self).value == "==" or self.at(self).value == ">=" or self.at(self).value == "<=" or self.at(self).value == ">" or self.at(self).value == "<"):
+            #TODO change eat to expect
+            operatorr = self.eat(self).value
+            rightt = self.parse_addative_expr(self)
+            leftt = BinaryExpr(kind="BinaryExpr", left = leftt, right = rightt, operator = operatorr)
+        return leftt
     
     def parse_addative_expr(self) -> Expr:
         leftt = self.parse_multiplicative_expr(self)

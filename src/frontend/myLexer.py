@@ -29,6 +29,7 @@ class TokenType(Enum):
     Quotation = 18 #"
     Unreconized = 19
     
+    
 @dataclass
 class Token():
     value: str
@@ -51,7 +52,11 @@ def isSkippable(value: str) -> bool:
     
 def getToken(value: str, typeOf: TokenType) -> Token:
     return Token(value, typeOf)
-    
+def checkIndex(i, list):
+    try:
+        return list[i]
+    except IndexError:
+        return False   
 def tokenize(sourceCode: str) -> list:
     tokens = []
     src = list(sourceCode)
@@ -70,7 +75,9 @@ def tokenize(sourceCode: str) -> list:
             tokens.append(getToken(src.pop(0), TokenType.OpenBracket))
         elif(src[0] == "]"):
             tokens.append(getToken(src.pop(0), TokenType.CloseBracket))
-        elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/" or src[0] == "%"):
+        elif(checkIndex(1, src) and (src[0]+src[1] == "==" or src[0]+src[1] == ">=" or src[0]+src[1] == "<=")):
+            tokens.append(getToken(src.pop(0)+src.pop(0), TokenType.BinaryOperator))
+        elif(src[0] == "+" or src[0] == "-" or src[0] == "*" or src[0] == "/" or src[0] == "%"   or src[0] == ">" or src[0] == "<"):
             tokens.append(getToken(src.pop(0), TokenType.BinaryOperator))
         elif(src[0] == "="):
             tokens.append(getToken(src.pop(0), TokenType.Equals))
@@ -104,5 +111,6 @@ def tokenize(sourceCode: str) -> list:
                 tokens.append(getToken(src.pop(0), TokenType.Unreconized))
     tokens.append(getToken("EndOfFile", TokenType.EOF))
     return tokens
+
 
 

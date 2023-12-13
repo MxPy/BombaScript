@@ -8,10 +8,10 @@ def evaluate_binary_expr(binop: BinaryExpr, env: Environment) -> RuntimeVal:
     rightSide = evaluate(binop.right, env)
     
     if(leftSide.typeOf == "number" and rightSide.typeOf == "number"):
-        return evaluate_numeric_binary_expr(leftSide, rightSide, binop.operator)
+        return evaluate_numeric_binary_expr(leftSide, rightSide, binop.operator, env)
     return NullVal(typeOf= "null", value= "null")
 
-def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, operator: str) -> NumberVal:
+def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, operator: str,  env: Environment):
     res = 0
     if(operator == "+"):
         res = leftSide.value + rightSide.value
@@ -23,6 +23,16 @@ def evaluate_numeric_binary_expr(leftSide: NumberVal, rightSide: NumberVal, oper
         res = leftSide.value / rightSide.value
     elif(operator == "*"):
         res = leftSide.value * rightSide.value
+    elif(operator == "=="):
+        return env.lookupVar("true") if leftSide.value == rightSide.value else env.lookupVar("false")
+    elif(operator == ">="):
+        return env.lookupVar("true") if leftSide.value >= rightSide.value else env.lookupVar("false") 
+    elif(operator == "<="):
+        return env.lookupVar("true") if leftSide.value <= rightSide.value else env.lookupVar("false")
+    elif(operator == ">"):
+        return env.lookupVar("true") if leftSide.value > rightSide.value else env.lookupVar("false")
+    elif(operator == "<"):
+        return env.lookupVar("true") if leftSide.value < rightSide.value else env.lookupVar("false")
     else:
         res = leftSide.value % rightSide.value
     
