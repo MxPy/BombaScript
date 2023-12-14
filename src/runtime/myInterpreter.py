@@ -55,8 +55,15 @@ def evaluate_identifier(ident: Identrifier, env: Environment) -> RuntimeVal:
 def evaluate_assignment(node: AssigmentExpr, env: Environment) -> RuntimeVal:
     if(node.assigne.kind == "MemberExpr"):
         obj = evaluate(node.assigne.obj, env)
-        obj.properties[node.assigne.prop.symbol] = evaluate(node.value, env)
-        return obj.properties[node.assigne.prop.symbol]
+        try:
+            obj.properties[node.assigne.prop.symbol] = evaluate(node.value, env)
+            return obj.properties[node.assigne.prop.symbol]
+        except AttributeError:
+            obj.properties[int(evaluate(node.assigne.prop, env).value)] = evaluate(node.value, env)
+            return obj.properties[int(evaluate(node.assigne.prop, env).value)]
+        except TypeError:
+            obj.properties[int(evaluate(node.assigne.prop, env).value)] = evaluate(node.value, env)
+            return obj.properties[int(evaluate(node.assigne.prop, env).value)]
     if(node.assigne.kind != "Identifier"):
         raise  ValueError(f"Invalid LHS identifier {node.assigne}")
     val = env.assignVar(varName= node.assigne.symbol, value= evaluate(node.value, env))
@@ -106,7 +113,7 @@ def evaluate_member_expr(expr: MemberExpr, env: Environment) -> RuntimeVal:
     try:
         return obj.properties.get(expr.prop.symbol)
     except AttributeError:
-        return obj.properties[int(expr.prop.value)]
+        return obj.properties[int(evaluate(expr.prop, env).value)]
 
 def evaluate_function_declaration(declaration: FunctionDeclaration, env: Environment) -> RuntimeVal:
     fun = FunctionVal(typeOf="function", name= declaration.name, params=declaration.params, declarationEnv=env, body=declaration.body)

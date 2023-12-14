@@ -48,9 +48,16 @@ class Environment:
         
     def print_args(self, args: list):
             for arg in args:
-                print(arg.value)
+                try:
+                    print(arg.value)
+                except AttributeError:
+                    print('[', end='')
+                    for a in arg.properties:
+                        print(a.value, end=',')
+                    print(']')
             return MK_NULL()
     
     def declare_global_functios(self):
         self.declareVar("print", MK_NATIVE_FN(lambda args, env: self.print_args(args)), True)
         self.declareVar("time", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
+        self.declareVar("len", MK_NATIVE_FN(lambda arg, env: MK_NUM(len(arg[0].properties))), True)

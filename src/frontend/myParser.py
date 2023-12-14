@@ -258,7 +258,7 @@ class Parser:
             self.expect(self, TokenType.Quotation, "Close Quatation Error ")
             return StringLiteral(kind="StringLiteral", value=val)
         else:
-            print(f"unexpected token found during parsing {self.at(self)}")
+            raise ValueError(f"unexpected token found during parsing {self.at(self)}")
             self.eat(self)
             
             
