@@ -19,7 +19,7 @@ def bomba():
         
       #  result = evaluate(program, env)
       #  print(result)
-    with open('src/testFiles/test.txt', 'r') as file:
+    with open('src/testFiles/test2.txt', 'r') as file:
         data = file.read()
         program = parser.produceAST(parser, data)
         #print(program)

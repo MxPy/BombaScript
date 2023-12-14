@@ -1,5 +1,6 @@
 from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration, ListLiteral
-from frontend.myLexer import tokenize, Token, TokenType
+#from frontend.myLexer import tokenize, Token, TokenType
+from frontend.bombaLexer import tokenize, Token, TokenType
 
 
 class Parser:
@@ -25,7 +26,9 @@ class Parser:
         )
         while (self.not_eof(self)):
             program.body.append(self.parse_stmt(self))
+        #print(program)
         return program
+    
     
     def parse_variable_declaration(self) -> Stmt:
         isConstant = True if self.eat(self).typeOf == TokenType.Const else False

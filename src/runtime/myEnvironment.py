@@ -46,6 +46,10 @@ class Environment:
         self.declareVar("false", MK_BOOL(False), True)
         self.declareVar("null", MK_NULL(), True)
         
+        self.declareVar("ZBUDOWALISMY_GO", MK_BOOL(True), True)
+        self.declareVar("NIE_DZIALA", MK_BOOL(False), True)
+        self.declareVar("SKASOWALEM_WINDOWSA", MK_NULL(), True)
+        
     def print_args(self, args: list):
             for arg in args:
                 try:
@@ -61,3 +65,7 @@ class Environment:
         self.declareVar("print", MK_NATIVE_FN(lambda args, env: self.print_args(args)), True)
         self.declareVar("time", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
         self.declareVar("len", MK_NATIVE_FN(lambda arg, env: MK_NUM(len(arg[0].properties))), True)
+        
+        self.declareVar("WLOZ_OKULARY_TRZY_D", MK_NATIVE_FN(lambda args, env: self.print_args(args)), True)
+        self.declareVar("SRODOWA_NOC_TO_WODY_CZAS", MK_NATIVE_FN(lambda arg, env: datetime.now()), True)
+        self.declareVar("ZAGADZA_SIE_UKRADLEM_ALE_TYLKO_FRAJER_BY_NIESKORZYSTAL", MK_NATIVE_FN(lambda arg, env: MK_NUM(len(arg[0].properties))), True)
