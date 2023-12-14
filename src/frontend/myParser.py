@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -45,6 +45,8 @@ class Parser:
             return self.parse_variable_declaration(self)
         elif(self.at(self).typeOf == TokenType.Fn):
             return self.parse_function_declaration(self)
+        elif(self.at(self).typeOf == TokenType.IF):
+            return self.parse_ifstmt_declaration(self)
         else:
             return self.parse_expr(self)
     
@@ -63,6 +65,21 @@ class Parser:
             bod.append(self.parse_stmt(self))
         self.expect(self, TokenType.CloseBrace, "Expected closing brace following function body")
         fun = FunctionDeclaration(kind="FunctionDeclaration", name= nae, body=bod, params=pars)
+        return fun
+    
+    def parse_ifstmt_declaration(self) -> Stmt:
+        self.eat(self)
+        self.expect(self, TokenType.OpenParen, "Expected open paren followig if keyword")
+        kay = self.parse_expr(self)
+        self.expect(self, TokenType.CloseParen, "Expected close paren followig if expr")
+    
+        self.expect(self, TokenType.OpenBrace, "Expected body following if statement")
+        bod = []
+        while(self.not_eof and self.at(self).typeOf != TokenType.CloseBrace):
+            bod.append(self.parse_stmt(self))
+        self.expect(self, TokenType.CloseBrace, "Expected closing brace following if body")
+        
+        fun = IfStmtDeclaration(kind="IfStmtDeclaration", key= kay, body=bod)
         return fun
     
     def parse_expr(self) -> Expr:

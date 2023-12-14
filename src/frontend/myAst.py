@@ -7,6 +7,7 @@ class NodeType:
     Program = "Program"
     VarDeclaration = "VarDeclaration"
     FunctionDeclaration = "FunctionDeclaration"
+    IfStmtDeclaration = "IfStmtDeclaration"
     
     #EXPR
     NumericLiteral = "NumericLiteral"
@@ -45,6 +46,12 @@ class FunctionDeclaration(Stmt):
     kind = NodeType.FunctionDeclaration
     params: list[str]
     name: str
+    body: Stmt
+
+@dataclass
+class IfStmtDeclaration(Stmt):
+    kind = NodeType.IfStmtDeclaration
+    key: Expr
     body: Stmt
 
 @dataclass
