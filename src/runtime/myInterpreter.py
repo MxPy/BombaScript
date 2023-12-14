@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal, StringVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration
+from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal, StringVal, ListVal
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration, ListLiteral
 
 from runtime.myEnvironment import Environment
 
@@ -72,6 +72,16 @@ def evaluate_object_expr(obj: ObjectLiteral, env: Environment) -> RuntimeVal:
         object.properties[prop.key] = val
     return object
 
+def evaluate_list_expr(obj: ListLiteral, env: Environment) -> RuntimeVal:
+    object = ListVal( typeOf="obj", properties= [])
+    for prop in obj.properties:
+        if(prop):
+            val = evaluate(prop, env)
+        else:
+            val = env.lookupVar(prop.key)
+        object.properties.append(val)
+    return object
+
 def evaluate_call_expr(expr: CallExpr, env: Environment) -> RuntimeVal:
     args = []
     for arg in expr.args:
@@ -93,7 +103,10 @@ def evaluate_call_expr(expr: CallExpr, env: Environment) -> RuntimeVal:
 
 def evaluate_member_expr(expr: MemberExpr, env: Environment) -> RuntimeVal:
     obj = evaluate(expr.obj, env)
-    return obj.properties.get(expr.prop.symbol)
+    try:
+        return obj.properties.get(expr.prop.symbol)
+    except AttributeError:
+        return obj.properties[int(expr.prop.value)]
 
 def evaluate_function_declaration(declaration: FunctionDeclaration, env: Environment) -> RuntimeVal:
     fun = FunctionVal(typeOf="function", name= declaration.name, params=declaration.params, declarationEnv=env, body=declaration.body)
@@ -143,6 +156,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return StringVal(typeOf="string", value=astNode.value)
     elif(astNode.kind == "CallExpr"): 
         return evaluate_call_expr(astNode, env)
+    elif(astNode.kind == "ListLiteral"): 
+        return evaluate_list_expr(astNode, env)
     elif(astNode.kind == "MemberExpr"): 
         return evaluate_member_expr(astNode, env)
     else:

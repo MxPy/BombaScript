@@ -20,6 +20,7 @@ class NodeType:
     AssigmentExpr = "AssigmentExpr"
     Property = "Property"
     ObjectLiteral = "ObjectLiteral"
+    ListLiteral = "ListLiteral"
 
 @dataclass
 class Stmt:
@@ -113,3 +114,7 @@ class ObjectLiteral(Expr):
     kind = NodeType.ObjectLiteral
     properties: list[Property]
     
+@dataclass
+class ListLiteral(Expr):
+    kind = NodeType.ListLiteral
+    properties: list

@@ -1,4 +1,4 @@
-from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration
+from frontend.myAst import NumericLiteral, Identrifier, BinaryExpr, Expr, Program, Stmt, VarDeclaration, AssigmentExpr, Property, ObjectLiteral, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration, ListLiteral
 from frontend.myLexer import tokenize, Token, TokenType
 
 
@@ -102,7 +102,7 @@ class Parser:
     
     def parse_object_expr(self) -> Expr:
         if(self.at(self).typeOf != TokenType.OpenBrace):
-            return self.parse_comparsion_expr(self)
+            return self.parse_list_expr(self)
         
         self.expect(self, TokenType.OpenBrace, "something went horribly wrong")
         props = []
@@ -125,6 +125,27 @@ class Parser:
         
         self.expect(self, TokenType.CloseBrace, "Expected closing brace after object properties")
         return ObjectLiteral(kind="ObjectLiteral", properties=props)
+    
+    def parse_list_expr(self) -> Expr:
+        if(self.at(self).typeOf != TokenType.OpenBracket):
+            return self.parse_comparsion_expr(self)
+        
+        self.expect(self, TokenType.OpenBracket, "something went horribly wrong")
+        props = []
+        while(self.not_eof(self) and self.at(self).typeOf != TokenType.CloseBracket):
+            val = self.parse_expr(self)
+            if(self.at(self).typeOf == TokenType.Comma):
+                self.eat(self)
+                props.append(val)
+                continue
+            elif(self.at(self).typeOf == TokenType.CloseBracket):
+                props.append(val)
+                continue
+            if(self.at(self).typeOf != TokenType.CloseBracket):
+                self.expect(self, TokenType.Comma, "Expected comma or closing barce after object property")
+        
+        self.expect(self, TokenType.CloseBracket, "Expected closing brace after object properties")
+        return ListLiteral(kind="ListLiteral", properties=props)
     
     def parse_assigment_expr(self):
         left = self.parse_object_expr(self)

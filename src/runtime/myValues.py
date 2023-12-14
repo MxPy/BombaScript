@@ -10,6 +10,7 @@ class ValueType:
     obj = "obj"
     native_fn = "native_fn"
     function = "function"
+    lsit = "lsit"
 
 
 @dataclass
@@ -40,6 +41,11 @@ class StringVal(RuntimeVal):
 class ObjectVal(RuntimeVal):
     typeOf: ValueType.obj
     properties: dict
+    
+@dataclass
+class ListVal(RuntimeVal):
+    typeOf: ValueType.lsit
+    properties: list
     
 
 def FunctionCall (args: list[RuntimeVal], env) -> RuntimeVal:
