@@ -1,5 +1,5 @@
 from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal, StringVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration
 
 from runtime.myEnvironment import Environment
 
@@ -99,6 +99,16 @@ def evaluate_function_declaration(declaration: FunctionDeclaration, env: Environ
     fun = FunctionVal(typeOf="function", name= declaration.name, params=declaration.params, declarationEnv=env, body=declaration.body)
     return env.declareVar(declaration.name, fun, True)
 
+def evaluate_if_stmt_declaration(declaration: IfStmtDeclaration, env: Environment) -> RuntimeVal:
+    key = evaluate(declaration.key, env)
+    scope = Environment(env)
+    result = MK_NULL()
+    if(key.value):
+        for st in declaration.body:
+            result = evaluate(st, scope)
+        return result
+    
+
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
         return NumberVal(typeOf = "number", value = astNode.value)
@@ -112,6 +122,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_var_declaration(astNode, env)
     elif(astNode.kind == "FunctionDeclaration"):
         return evaluate_function_declaration(astNode, env)
+    elif(astNode.kind == "IfStmtDeclaration"):
+        return evaluate_if_stmt_declaration(astNode, env)
     elif(astNode.kind == "AssigmentExpr"): 
         return evaluate_assignment(astNode, env)
     elif(astNode.kind == "ObjectLiteral"): 
