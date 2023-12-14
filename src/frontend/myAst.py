@@ -8,6 +8,7 @@ class NodeType:
     VarDeclaration = "VarDeclaration"
     FunctionDeclaration = "FunctionDeclaration"
     IfStmtDeclaration = "IfStmtDeclaration"
+    WhlieLoopDeclaration = "WhlieLoopDeclaration"
     
     #EXPR
     NumericLiteral = "NumericLiteral"
@@ -51,6 +52,12 @@ class FunctionDeclaration(Stmt):
 @dataclass
 class IfStmtDeclaration(Stmt):
     kind = NodeType.IfStmtDeclaration
+    key: Expr
+    body: Stmt
+
+@dataclass
+class WhlieLoopDeclaration(Stmt):
+    kind = NodeType.WhlieLoopDeclaration
     key: Expr
     body: Stmt
 

@@ -12,6 +12,7 @@ class TokenType(Enum):
     Const = 8
     Fn = 17 
     IF = 20
+    While = 21
 
     #Grouping * Operators
     BinaryOperator = 3
@@ -40,7 +41,8 @@ KEYWORDS = {
     "let": TokenType.Let,
     "const": TokenType.Const,
     "fn": TokenType.Fn,
-    "if": TokenType.IF
+    "if": TokenType.IF,
+    "while": TokenType.While
 }
     
 def isInt(value: str) -> bool:

@@ -1,5 +1,5 @@
 from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal, ObjectVal, MK_NULL, NativeFnVal, FunctionVal, StringVal
-from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration
+from frontend.myAst import NodeType, Stmt, NumericLiteral, BinaryExpr, Program, Identrifier, VarDeclaration, AssigmentExpr, ObjectLiteral, Property, CallExpr, MemberExpr, FunctionDeclaration, StringLiteral, IfStmtDeclaration, WhlieLoopDeclaration
 
 from runtime.myEnvironment import Environment
 
@@ -108,6 +108,15 @@ def evaluate_if_stmt_declaration(declaration: IfStmtDeclaration, env: Environmen
             result = evaluate(st, scope)
         return result
     
+def evaluate_while_loop_declaration(declaration: WhlieLoopDeclaration, env: Environment) -> RuntimeVal:
+    scope = Environment(env)
+    result = MK_NULL()
+    while(evaluate(declaration.key, env).value):
+        for st in declaration.body:
+            result = evaluate(st, scope)
+    
+    return result
+    
 
 def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
     if(astNode.kind == "NumericLiteral"): 
@@ -124,6 +133,8 @@ def evaluate(astNode: Stmt, env: Environment) -> RuntimeVal:
         return evaluate_function_declaration(astNode, env)
     elif(astNode.kind == "IfStmtDeclaration"):
         return evaluate_if_stmt_declaration(astNode, env)
+    elif(astNode.kind == "WhlieLoopDeclaration"):
+        return evaluate_while_loop_declaration(astNode, env)
     elif(astNode.kind == "AssigmentExpr"): 
         return evaluate_assignment(astNode, env)
     elif(astNode.kind == "ObjectLiteral"): 
