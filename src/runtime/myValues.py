@@ -70,7 +70,7 @@ def MK_BOOL(val: bool = True) -> BooleanVal:
 
 #macros
 def MK_NULL() -> NullVal:
-    return NullVal(typeOf="null", value= "null")
+    return NullVal(typeOf="null", value= None)
 
 #macros
 def MK_NATIVE_FN(calle: FunctionCall) -> NullVal:

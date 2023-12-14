@@ -46,7 +46,7 @@ class Parser:
         elif(self.at(self).typeOf == TokenType.Fn):
             return self.parse_function_declaration(self)
         elif(self.at(self).typeOf == TokenType.IF):
-            return self.parse_ifstmt_declaration(self)
+            return self.parse_if_stmt_declaration(self)
         else:
             return self.parse_expr(self)
     
@@ -67,7 +67,7 @@ class Parser:
         fun = FunctionDeclaration(kind="FunctionDeclaration", name= nae, body=bod, params=pars)
         return fun
     
-    def parse_ifstmt_declaration(self) -> Stmt:
+    def parse_if_stmt_declaration(self) -> Stmt:
         self.eat(self)
         self.expect(self, TokenType.OpenParen, "Expected open paren followig if keyword")
         kay = self.parse_expr(self)
