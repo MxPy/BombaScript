@@ -46,3 +46,35 @@ KIM_JESTES myArray NAZYWAM_SIE_PAPA_SLON_ALE_WSZYSCY_MOWIA_MI_MARIUSZ
 WLOZ_OKULARY_TRZY_D 
 KIM_JESTES myArray NAZYWAM_SIE_PAPA_SLON_ALE_WSZYSCY_MOWIA_MI_MARIUSZ
 ```
+
+the same sample written in pseudocode
+```
+fn bubbleSort(arr){
+    let n = len(arr);
+    let swapped = true; 
+    let i = 0;
+    let temp = 0;
+    while(swapped){
+        swapped = false
+        i = 0
+        while(i < n - 1){
+            if (arr[i] > arr[i + 1]){
+                temp = arr[i + 1]
+                arr[i + 1] = arr[i]
+                arr[i] = temp
+                swapped = true
+            }
+            i = i + 1
+        }
+    }
+}
+    
+        
+let myArray = [64, 34, 25, 12, 22, 11, 90];
+
+
+print(myArray)
+bubbleSort(myArray)
+
+print(myArray)
+```
