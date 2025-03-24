@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from frontend.myAst import Stmt
+from src.frontend.myAst import Stmt
 
 @dataclass
 class ValueType:

@@ -63,6 +63,7 @@ KEYWORDS = {
     "<=": TokenType.BinaryOperator,
     ">": TokenType.BinaryOperator,
     "<": TokenType.BinaryOperator,
+    ",": TokenType.Comma
     
 }
 BOMBAMAPPER = {
@@ -86,7 +87,7 @@ BOMBAMAPPER = {
     "CZTERY_RAZY_WODA_CZTERY_RAZY_PODWOJNIE": "*",
     "KUTARATE_LAMANE_NA_HUDO": '/',
     "JUDASZU_TRAFILES_W_PORTFEL_STRACILEM_MAJATEK": '-',
-    "MARIK_RAZ_DWA_TRZY_CZTERY_WROCILEM_ZKOLEGAMI": '+',
+    "MARIK_RAZ_DWA_TRZY_CZTERY_WROCILEM_Z_KOLEGAMI": '+',
     "SREDNIA_HAWAJSKA_DLA_KAZDEGO": '==',
     "O_KURWA_DIABEL": '>=',
     "MYSLALEM_ZE_JESTES_UPOSLEDZONY": '<=',

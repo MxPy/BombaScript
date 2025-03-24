@@ -1,5 +1,5 @@
-from runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal
-from runtime.myValues import MK_NULL, MK_NUM, MK_BOOL, MK_NATIVE_FN
+from src.runtime.myValues import RuntimeVal, ValueType, NumberVal, NullVal
+from src.runtime.myValues import MK_NULL, MK_NUM, MK_BOOL, MK_NATIVE_FN
 from datetime import datetime
 
 class Environment:

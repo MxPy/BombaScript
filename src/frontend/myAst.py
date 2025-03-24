@@ -12,7 +12,7 @@ class NodeType:
     
     #EXPR
     NumericLiteral = "NumericLiteral"
-    StringLiteral = "StringLiteral"
+    StringLiteral = "StringLiteral" #todo fix whitespaces
     Identifier = "Identifier"
     BinaryExpr = "BinaryExpr"
     MemberExpr = "MemberExpr"
